@@ -25,45 +25,58 @@ router.get('/', (req, res, next) => {
 
 //  GET the Book Details page in order to add a new Book
 router.get('/add', (req, res, next) => {
-
-    /*****************
-     * ADD CODE HERE *
-     *****************/
-
+   
+  res.render('books/add', { title: 'Books' })
 });
 
 // POST process the Book Details page and create a new Book - CREATE
 router.post('/add', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  const {
+    Title,
+    Price,
+    Author,
+    Genre
+} = req.body;
+console.log(Title, Price, Author,Genre);
+const club = new book({
+  Title,
+  Price,
+  Author,
+  Genre
+});
+club.save(err => {
+    if (err) {
+        console.log(err);
+    } else {
+        res.redirect('/books');
+    }
+});
 
 });
 
 // GET the Book Details page in order to edit an existing Book
-router.get('/:id', (req, res, next) => {
+router.get('/details/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  book.findOneAndUpdate({_id: req.params.id},req.body, { new: true }, (err, docs)=>{ 
+    res.render('books/details', {books:docs, title: 'Books' });
+})
 });
 
 // POST - process the information passed from the details form and update the document
-router.post('/:id', (req, res, next) => {
+router.post('/details/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
-
+  book.findByIdAndUpdate({_id: req.params.id},req.body, (err)=>{
+    res.redirect('/books');
+  })
 });
 
 // GET - process the delete by user id
 router.get('/delete/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  book.findByIdAndDelete({_id:req.params.id}, err=>{
+    res.redirect('/books');
+  })
 });
 
 
